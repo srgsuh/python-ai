@@ -1,0 +1,1 @@
+CALL "C:\Users\ageres\miniconda3\condabin\conda.bat" activate ai_env

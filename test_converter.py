@@ -9,13 +9,19 @@ class TestConverters(ut.TestCase):
             "Company": ["Toyota", "Hyundai", "Hyundai", "Hyundai", "Toyota"],
             "Model": ["Corolla", "I10", "Tucson", "I10", "Camry"]
         })
-        self.mapper = columnsMapper(["Company", "Model"], self.df)
+        self.valid_dct: dict[str, int] = {"Corolla": 0, "I10": 1, "Tucson": 2, "Camry": 3}
     
     def test_enumerator(self):
-        correct_dct: dict[str, int] = {"Corolla": 0, "I10": 1, "Tucson": 2, "Camry": 3}
-        tested_dct: dict[str, int] = enumerator(self.df["Model"].unique())
-        self.assertEqual(sorted(correct_dct.keys()), sorted(tested_dct.keys()))
-        self.assertEqual(sorted(correct_dct.values()), sorted(tested_dct.values()))
+        dct: dict[str, int] = enumerator(self.df["Model"].unique())
+        self.assertEqual(sorted(self.valid_dct.keys()), sorted(dct.keys()))
+        self.assertEqual(sorted(self.valid_dct.values()), sorted(dct.values()))
+
+    def test_columns_mapper(self):
+        mapper = columnsMapper(["Model"], self.df)
+        self.assertEqual(["Model"], list(mapper.keys()))
+        self.assertEqual(sorted(self.valid_dct.keys()), sorted(mapper["Model"].keys()))
+        self.assertEqual(sorted(self.valid_dct.values()), sorted(mapper["Model"].values()))
+
 
 if __name__ == '__main__':
     ut.main()

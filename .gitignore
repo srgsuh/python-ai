@@ -2,3 +2,4 @@
 car_sales_cleaned1.csv
 .vscode/**
 __pycache__/**
+model_by_gender_color.pkl

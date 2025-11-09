@@ -11,7 +11,6 @@ def game_of_life(size: int, alive_val: int = 220, dead_val: int = 0, init_data: 
     prev: NDArray[np.uint8] = _random_gol(size, alive_val, dead_val) if init_data is None else init_data
 
     def alive_neighbors(row: int, col: int) -> int:
-        count_alive: int = -1 if prev[row, col] == alive_val else 0
         r_min, r_max = max(row - 1, 0), min(row + 2, size)
         c_min, c_max = max(col - 1, 0), min(col + 2, size)
         

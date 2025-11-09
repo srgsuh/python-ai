@@ -4,14 +4,10 @@ from numpy.typing import NDArray
 
 _gen = np.random.default_rng()
 
-def _random_gol(size: int, alive_val: np.uint8 | int, dead_val: np.uint8 | int) -> NDArray[np.uint8]:
-    rm: NDArray[np.uint8] = np.empty((size, size), dtype=np.uint8)
-    for r in range(size):
-        for c in range(size):
-            rm[r, c] = dead_val if _gen.random() < 0.5 else alive_val
-    return rm
+def _random_gol(n: int, alive_val: int, dead_val: int) -> NDArray[np.uint8]:
+    return _gen.choice([alive_val, dead_val], size=(n, n))
 
-def game_of_life(size: int, alive_val: np.uint8 | int = 220, dead_val: np.uint8 | int = 0, init_data: NDArray[np.uint8] | None = None)->Generator[NDArray[np.uint8], None, None]:
+def game_of_life(size: int, alive_val: int = 220, dead_val: int = 0, init_data: NDArray[np.uint8] | None = None)->Generator[NDArray[np.uint8], None, None]:
     prev: NDArray[np.uint8] = _random_gol(size, alive_val, dead_val) if init_data is None else init_data
 
     def alive_neighbors(row: int, col: int) -> int:

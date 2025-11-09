@@ -32,9 +32,3 @@ def game_of_life(size: int, alive_val: int = 220, dead_val: int = 0, init_data: 
         if np.array_equal(prev, current):
             break
         prev = current
-
-if __name__ == "__main__":
-    for step, mx in enumerate(game_of_life(3, 1, 0, np.array([[1,1,0],[0,1,1],[0,0,0]], dtype=np.uint8))):
-        print(mx)
-        if step == 10:
-            break

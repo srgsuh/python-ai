@@ -25,7 +25,7 @@ class TestGameOfLife(ut.TestCase):
         self.assertTrue(np.array_equal(init_data, output[0]))
         self.assertTrue(np.array_equal(self.__zeros(), output[1]))
     
-    def test_life_appears_with_3_neigbors(self):
+    def test_life_appears_with_3_neigbors(self) -> None:
         init_data = np.array([[1,1,0],[1,0,0],[0,0,0]], dtype=np.uint8)
         brick = np.array([[1,1,0],[1,1,0],[0,0,0]], dtype=np.uint8)
         output = self.__test_sample(init_data)
@@ -33,6 +33,14 @@ class TestGameOfLife(ut.TestCase):
         self.assertTrue(np.array_equal(init_data, output[0]))
         self.assertTrue(np.array_equal(brick, output[1]))
 
+    def test_over_population(self) -> None:
+        init_data = np.ones((3,3), dtype=np.uint8)
+        next =  np.array([[1,0,1],[0,0,0],[1,0,1]], dtype=np.uint8)
+        output = self.__test_sample(init_data)
+        self.assertEqual(3, len(output))
+        self.assertTrue(np.array_equal(init_data, output[0]))
+        self.assertTrue(np.array_equal(next, output[1]))
+        self.assertTrue(np.array_equal(self.__zeros(), output[2]))
         
 
 

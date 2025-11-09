@@ -16,11 +16,10 @@ def game_of_life(size: int, alive_val: np.uint8 | int = 220, dead_val: np.uint8 
 
     def alive_neighbors(row: int, col: int) -> int:
         count_alive: int = -1 if prev[row, col] == alive_val else 0
-        for r in range(max(row - 1, 0), min(row + 2, size)):
-            for c in range(max(col - 1, 0), min(col + 2, size)):
-                count_alive += 1 if prev[r, c] == alive_val else 0
-        return count_alive
-
+        r_min, r_max = max(row - 1, 0), min(row + 2, size)
+        c_min, c_max = max(col - 1, 0), min(col + 2, size)
+        
+        return count_alive + np.count_nonzero(prev[r_min:r_max, c_min:c_max] == alive_val)
 
     def next_generation() -> NDArray[np.uint8]:
         mx: NDArray[np.uint8] = np.empty((size, size), dtype=np.uint8)

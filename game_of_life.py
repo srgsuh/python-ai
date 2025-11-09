@@ -16,13 +16,16 @@ def game_of_life(size: int, alive_val: int = 220, dead_val: int = 0, init_data: 
         
         return np.count_nonzero(prev[r_min:r_max, c_min:c_max] == alive_val) - np.count_nonzero(prev[row, col] == alive_val)
 
+    def next_cell(row: int, col: int) -> int:
+        count_alive: int = alive_neighbors(row, col)
+        return alive_val if (count_alive == 3 or 
+                        (count_alive == 2 and prev[row, col] == alive_val)) else dead_val
+
     def next_generation() -> NDArray[np.uint8]:
         mx: NDArray[np.uint8] = np.empty((size, size), dtype=np.uint8)
         for row in range(size):
             for col in range(size):
-                count_alive: int = alive_neighbors(row, col)
-                mx[row, col] = alive_val if (count_alive == 3 or 
-                        (count_alive == 2 and prev[row, col] == alive_val)) else dead_val
+                mx[row, col] = next_cell(row, col)
         return mx
 
     while True:

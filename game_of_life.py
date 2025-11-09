@@ -15,7 +15,7 @@ def game_of_life(size: int, alive_val: int = 220, dead_val: int = 0, init_data: 
         r_min, r_max = max(row - 1, 0), min(row + 2, size)
         c_min, c_max = max(col - 1, 0), min(col + 2, size)
         
-        return count_alive + np.count_nonzero(prev[r_min:r_max, c_min:c_max] == alive_val)
+        return np.count_nonzero(prev[r_min:r_max, c_min:c_max] == alive_val) - np.count_nonzero(prev[row, col] == alive_val)
 
     def next_generation() -> NDArray[np.uint8]:
         mx: NDArray[np.uint8] = np.empty((size, size), dtype=np.uint8)

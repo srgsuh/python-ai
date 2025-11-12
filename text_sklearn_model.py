@@ -21,15 +21,15 @@ class TextModel:
     def getAnswers(self, question: str, nAnswers: int = 1) -> list[str]:
         question_vector = self.__vectorizer.transform([question])
         similarities = cosine_similarity(self.__model, question_vector).ravel()
-        ind_sort = np.argsort(-similarities)
+        ind_sort = np.argsort(similarities)
         
-        return [self.__sentences[ind_sort[j]]
-                for j in range(nAnswers) if similarities[ind_sort[j]] > self.tol]
+        return [self.__sentences[ind_sort[-j]]
+                for j in range(1, nAnswers + 1) if similarities[ind_sort[-j]] > self.tol]
         
     
 
 if __name__ == "__main__":
     text = read_file("tortoise_and_a_hare.txt")
     model = TextModel(text)
-    for x in model.getAnswers("Why did the hare agree to the proposal", 2):
+    for x in model.getAnswers("Why did the hare agree to the proposal", 3):
         print(x)

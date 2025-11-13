@@ -4,3 +4,8 @@ car_sales_cleaned1.csv
 __pycache__/**
 model_by_gender_color.pkl
 activate_env.bat
+yolov8l-cls.pt
+yolov8l.pt
+yolov8m-seg.pt
+yolov8m.pt
+yolov8n.pt

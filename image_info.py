@@ -49,19 +49,21 @@ class ImageInfo:
     def distance(self, index_one, index_two) -> float:
         x1, y1 = self.get_center(index_one)
         x2, y2 = self.get_center(index_two)
+
         return math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
 
-    def suitcaseHandbagPerson(self, max_distance: float) -> dict[int, tuple[float, int] | None]:
+    def suitcaseHandbagPerson(self, max_distance: float) -> dict[int, tuple[int, float] | None]:
         person_indices = self.boxesClass("person")
-        distances: dict[int, tuple[float, int] | None] = {}
+        distances: dict[int, tuple[int, float] | None] = {}
         for bag_idx in self.baggage_indices():
-            p_idx, distance = min((self.distance(bag_idx, p_idx), p_idx) for p_idx in person_indices)
-            distances[bag_idx] = None if distance > max_distance else (p_idx, distance)
+            distance, person_idx = min((self.distance(bag_idx, p_idx), p_idx) for p_idx in person_indices)
+            print(f" bag : {bag_idx}, p: {person_idx}, distance: {distance}")
+            distances[bag_idx] = None if distance > max_distance else (person_idx, distance)
         
         return distances
 
 if __name__ == "__main__":
-    ii: ImageInfo = ImageInfo("./bus.jpg")
+    ii: ImageInfo = ImageInfo("./img.jpg")
     print(ii.boxesClass("person"))
     print("BoxInfo: ", ii.boxInfo(0))
     print("COORD: ", ii.get_center(0), ii.get_center(1))

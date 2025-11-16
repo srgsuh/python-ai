@@ -27,19 +27,17 @@ class ImageInfo:
         df_xywh: pd.DataFrame = pd.DataFrame(self.xywh, columns=["x_center", "y_center", "width", "height"])
         df_xyxy: pd.DataFrame = pd.DataFrame(self.xyxy, columns=["xmin", "ymin", "xmax", "ymax"])
         self.df: pd.DataFrame = pd.concat([df_xywh, df_xyxy], axis=1)
-        self.df["class"] = [self.class_by_id[class_id] for class_id in self.ids]
+        self.df["class_name"] = [self.class_by_id[class_id] for class_id in self.ids]
         self.df["confidence"] = self.conf
         print(self.df)
 
     def boxesClass(self, class_name: str) -> list[int]:
-        class_id = self.id_by_class[class_name]
-        indices = np.nonzero(self.ids == class_id)[0]
-        return indices.tolist()
+        return self.df.index[self.df.class_name == class_name].to_list()
     
-    def boxInfo(self, box_index):
-        row: pd.Series = self.df.loc[box_index, ["xmin","ymin","xmax","ymax","confidence","class"]]
-        *numbers, cls_name = row
-        return tuple(float(x) for x in numbers) + (str(cls_name),)
+    def boxInfo(self, box_index) -> tuple:
+        row: pd.Series = self.df.loc[box_index].loc[["xmin","ymin","xmax","ymax","confidence","class_name"]]
+        *numbers, class_name = row
+        return tuple(float(x) for x in numbers) + (str(class_name),)
     
     def dataFrame(self) -> pd.DataFrame:
         return self.df

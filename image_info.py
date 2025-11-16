@@ -3,12 +3,9 @@ import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
 from ultralytics.engine.results import Boxes, BaseTensor
+import math
 
-BAGGAGE_CLASSES: dict[str, str] = {
-    "24": "backpack",
-    "26": "handbag",
-    "28": "suitcase"
-}
+BAGGAGE_CLASSES: list[str] = ["backpack","handbag","suitcase"]
 
 class ImageInfo:
     def __init__(self, img_path: str):
@@ -16,7 +13,7 @@ class ImageInfo:
         results: list[BaseTensor] = self.__model(img_path)
         self.boxes: BaseTensor  = results[0].boxes.cpu()
         self.ids = results[0].boxes.cls.cpu().numpy()
-        self.xywh = results[0].boxes.xywh.cpu().numpy()
+        self.xywhn = results[0].boxes.xywhn.cpu().numpy()
         self.xyxy = results[0].boxes.xyxy.cpu().numpy()
         self.conf = results[0].boxes.conf.cpu().numpy()
         self.class_by_id: dict[int, str] = results[0].names
@@ -24,7 +21,7 @@ class ImageInfo:
         self.__build_data_frame()
     
     def __build_data_frame(self) -> None:
-        df_xywh: pd.DataFrame = pd.DataFrame(self.xywh, columns=["x_center", "y_center", "width", "height"])
+        df_xywh: pd.DataFrame = pd.DataFrame(self.xywhn, columns=["x_center", "y_center", "width", "height"])
         df_xyxy: pd.DataFrame = pd.DataFrame(self.xyxy, columns=["xmin", "ymin", "xmax", "ymax"])
         self.df: pd.DataFrame = pd.concat([df_xywh, df_xyxy], axis=1)
         self.df["class_name"] = [self.class_by_id[class_id] for class_id in self.ids]
@@ -34,6 +31,9 @@ class ImageInfo:
     def boxesClass(self, class_name: str) -> list[int]:
         return self.df.index[self.df.class_name == class_name].to_list()
     
+    def baggage_indices(self) -> list[int]:
+        return self.df.index[self.df.class_name.isin(BAGGAGE_CLASSES)].to_list()
+    
     def boxInfo(self, box_index) -> tuple:
         row: pd.Series = self.df.loc[box_index].loc[["xmin","ymin","xmax","ymax","confidence","class_name"]]
         *numbers, class_name = row
@@ -41,8 +41,29 @@ class ImageInfo:
     
     def dataFrame(self) -> pd.DataFrame:
         return self.df
+    
+    def get_center(self, box_index) -> tuple[float,...]:
+        row: pd.Series = self.df.loc[box_index].loc[["x_center","y_center"]]
+        return tuple(float(x) for x in row)
+    
+    def distance(self, index_one, index_two) -> float:
+        x1, y1 = self.get_center(index_one)
+        x2, y2 = self.get_center(index_two)
+        return math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
+
+    def suitcaseHandbagPerson(self, max_distance: float) -> dict[int, tuple[float, int] | None]:
+        person_indices = self.boxesClass("person")
+        distances: dict[int, tuple[float, int] | None] = {}
+        for bag_idx in self.baggage_indices():
+            p_idx, distance = min((self.distance(bag_idx, p_idx), p_idx) for p_idx in person_indices)
+            distances[bag_idx] = None if distance > max_distance else (p_idx, distance)
+        
+        return distances
 
 if __name__ == "__main__":
     ii: ImageInfo = ImageInfo("./bus.jpg")
     print(ii.boxesClass("person"))
     print("BoxInfo: ", ii.boxInfo(0))
+    print("COORD: ", ii.get_center(0), ii.get_center(1))
+    print("DISTANCE: ", ii.distance(0, 1))
+    print(f"Dict: {ii.suitcaseHandbagPerson(1.0)}")

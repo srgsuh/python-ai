@@ -54,9 +54,10 @@ class ImageInfo:
 
         return math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
 
-    def suitcaseHandbagPerson(self, max_distance: float) -> dict[int, tuple[int, float] | None]:
+    def suitcaseHandbagPerson(self, max_distance: float = 1) -> dict[int, tuple[int, float] | None]:
         """Get the dictionary, containing data about all baggage pieces and the closest person.
-        If the distance to the closest person exceeds the max_distance threshold return None instead of the person data
+        If the distance to the closest person exceeds the max_distance threshold return None instead of the person data.
+        The max_distance value is relative to the image size, and is expected to be between 0 and 1.
         """
         person_indices = self.boxesClass("person")
         distances: dict[int, tuple[int, float] | None] = {}

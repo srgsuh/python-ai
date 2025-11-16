@@ -36,13 +36,13 @@ class ImageInfo:
         return self.__indices_by_class_list(BAGGAGE_CLASSES)
     
     def boxInfo(self, box_index) -> tuple:
-        """Get list of absolute coordinates of the object with the box_index index, along with confidence level and the object class name"""
+        """Get a list of absolute coordinates of the object with the box_index index, along with confidence level and the object class name"""
         row: pd.Series = self.df.loc[box_index].loc[["xmin","ymin","xmax","ymax","confidence","class_name"]]
         *numbers, class_name = row
-        return tuple(float(x) for x in numbers) + (str(class_name),)
+        return tuple([float(x) for x in numbers] + [class_name])
     
     def dataFrame(self) -> pd.DataFrame:
-        """Get the DataFrame with a comprehensive data about all the objects, found in the image"""
+        """Get a DataFrame with a comprehensive data about all the objects, found in the image"""
         return self.df
     
     def relative_center(self, box_index) -> tuple[float,...]:
@@ -51,28 +51,28 @@ class ImageInfo:
         return tuple(float(x) for x in row)
     
     def distance(self, index_one, index_two) -> float:
-        """Get relative distance between the two objects with certain indices"""
+        """Get a relative distance between two objects with the specified indices"""
         x1, y1 = self.relative_center(index_one)
         x2, y2 = self.relative_center(index_two)
-
-        return math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
+        dx, dy = x2 - x1, y2 - y1
+        return math.sqrt(dx * dx + dy * dy)
 
     def suitcaseHandbagPerson(self, max_distance: float = 1) -> dict[int, tuple[int, float] | None]:
         """Get the dictionary, containing data about all baggage pieces and respective closest persons.
         If the distance to the closest person exceeds the max_distance threshold return None instead of the person data.
         The max_distance value is relative to the image size, and is expected to be between 0 and 1.
         """
-        distances: dict[int, tuple[int, float] | None] = {bag_idx: None for bag_idx in self.baggage_indices()}
-        person_indices = self.boxesClass("person")
+        baggage_data: dict[int, tuple[int, float] | None] = dict.fromkeys(self.baggage_indices())
+        person_indices: list[int] = self.boxesClass("person")
         if person_indices:
-            for bag_idx in distances:
-                distance, person_idx = min((self.distance(bag_idx, p_idx), p_idx) for p_idx in person_indices)
-                distances[bag_idx] = None if distance > max_distance else (person_idx, distance)
+            for bag in baggage_data:
+                distance, person_idx = min((self.distance(bag, p), p) for p in person_indices)
+                baggage_data[bag] = None if distance > max_distance else (person_idx, distance)
         
-        return distances
+        return baggage_data
 
 if __name__ == "__main__":
-    ii: ImageInfo = ImageInfo("./lonely_bag.jpg")
+    ii: ImageInfo = ImageInfo("./bag.jpg")
     print(ii.boxesClass("person"))
     print("BoxInfo: ", ii.boxInfo(0))
     print("COORD: ", ii.relative_center(0), ii.relative_center(1))

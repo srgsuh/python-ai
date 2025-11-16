@@ -9,6 +9,7 @@ BAGGAGE_CLASSES: list[str] = ["backpack","handbag","suitcase"]
 
 class ImageInfo:
     def __init__(self, img_path: str):
+        """Create the ImageInfo instance from a path to an image file. Use the yolov8m-seg model internally"""
         model = YOLO("yolov8m-seg.pt")
         results: list[BaseTensor] = model(img_path)
         
@@ -24,30 +25,39 @@ class ImageInfo:
         self.df["confidence"] = conf
 
     def boxesClass(self, class_name: str) -> list[int]:
+        """Get a list of indices of the objects of a  class_name class"""
         return self.df.index[self.df.class_name == class_name].to_list()
     
     def baggage_indices(self) -> list[int]:
+        """Get a list of indices of the baggage objects"""
         return self.df.index[self.df.class_name.isin(BAGGAGE_CLASSES)].to_list()
     
     def boxInfo(self, box_index) -> tuple:
+        """Get list of absolute coordinates of the object with the box_index index, along with confidence level and the object class name"""
         row: pd.Series = self.df.loc[box_index].loc[["xmin","ymin","xmax","ymax","confidence","class_name"]]
         *numbers, class_name = row
         return tuple(float(x) for x in numbers) + (str(class_name),)
     
     def dataFrame(self) -> pd.DataFrame:
+        """Get the DataFrame with a comprehensive data about all the objects, found in the image"""
         return self.df
     
     def get_center(self, box_index) -> tuple[float,...]:
+        """Get relative coordinates of the center of the specific object indexed with box_index"""
         row: pd.Series = self.df.loc[box_index].loc[["x_center","y_center"]]
         return tuple(float(x) for x in row)
     
     def distance(self, index_one, index_two) -> float:
+        """Get relative distance between the two objects with certain indices"""
         x1, y1 = self.get_center(index_one)
         x2, y2 = self.get_center(index_two)
 
         return math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
 
     def suitcaseHandbagPerson(self, max_distance: float) -> dict[int, tuple[int, float] | None]:
+        """Get the dictionary, containing data about all baggage pieces and the closest person.
+        If the distance to the closest person exceeds the max_distance threshold return None instead of the person data
+        """
         person_indices = self.boxesClass("person")
         distances: dict[int, tuple[int, float] | None] = {}
         for bag_idx in self.baggage_indices():
@@ -58,7 +68,7 @@ class ImageInfo:
         return distances
 
 if __name__ == "__main__":
-    ii: ImageInfo = ImageInfo("./img.jpg")
+    ii: ImageInfo = ImageInfo("./bus.jpg")
     print(ii.boxesClass("person"))
     print("BoxInfo: ", ii.boxInfo(0))
     print("COORD: ", ii.get_center(0), ii.get_center(1))

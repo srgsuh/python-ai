@@ -37,7 +37,9 @@ class ImageInfo:
         return indices.tolist()
     
     def boxInfo(self, box_index):
-        raise NotImplementedError()
+        row: pd.Series = self.df.loc[box_index, ["xmin","ymin","xmax","ymax","confidence","class"]]
+        *numbers, cls_name = row
+        return tuple(float(x) for x in numbers) + (str(cls_name),)
     
     def dataFrame(self) -> pd.DataFrame:
         return self.df
@@ -45,3 +47,4 @@ class ImageInfo:
 if __name__ == "__main__":
     ii: ImageInfo = ImageInfo("./bus.jpg")
     print(ii.boxesClass("person"))
+    print("BoxInfo: ", ii.boxInfo(0))

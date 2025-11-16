@@ -7,7 +7,14 @@ from torch import Tensor
 import math
 
 BAGGAGE_CLASSES: list[str] = ["backpack","handbag","suitcase"]
-COLUMNS: list[str] = ["x_center","y_center","width", "height","xmin","ymin","xmax","ymax","class_name","confidence"]
+COLUMN_CLASS: str = "class_name"
+COLUMN_CONF: str = "confidence"
+COLUMN_X_C: str = "x_center"
+COLUMN_Y_C: str = "y_center"
+COLUMNS_RELATIVE: list[str] = [COLUMN_X_C, COLUMN_Y_C, "width", "height"]
+COLUMNS_ABSOLUTE: list[str] = ["xmin", "ymin", "xmax", "ymax"]
+
+COLUMNS: list[str] = COLUMNS_RELATIVE + COLUMNS_ABSOLUTE + [COLUMN_CONF, COLUMN_CLASS]
 
 def get_ndarray(array: Tensor | NDArray) -> NDArray:
     if isinstance(array, Tensor):
@@ -23,19 +30,15 @@ class ImageInfo:
     def __build_df(self, img_path: str) -> None:
         model: YOLO = YOLO("yolov8m-seg.pt")
         result: list[Results] = model(img_path)
-        if result and result[0].boxes:
+        if result and result[0] and result[0].boxes:
             boxes: Boxes = result[0].boxes
-            xywhn: NDArray = get_ndarray(boxes.xywhn)
-            xyxy: NDArray = get_ndarray(boxes.xyxy)
-            class_ids: NDArray = get_ndarray(boxes.cls)
-            conf: NDArray = get_ndarray(boxes.conf)
             names: dict[int, str] = result[0].names
 
-            df_xywh: pd.DataFrame = pd.DataFrame(xywhn, columns=["x_center", "y_center", "width", "height"])
-            df_xyxy: pd.DataFrame = pd.DataFrame(xyxy, columns=["xmin", "ymin", "xmax", "ymax"])
+            df_xywh: pd.DataFrame = pd.DataFrame(get_ndarray(boxes.xywhn), columns=COLUMNS_RELATIVE)
+            df_xyxy: pd.DataFrame = pd.DataFrame(get_ndarray(boxes.xyxy), columns=COLUMNS_ABSOLUTE)
             self.df: pd.DataFrame = pd.concat([df_xywh, df_xyxy], axis=1)
-            self.df["class_name"] = [names[class_id] for class_id in class_ids]
-            self.df["confidence"] = conf
+            self.df[COLUMN_CLASS] = [names[class_id] for class_id in get_ndarray(boxes.cls)]
+            self.df[COLUMN_CONF] = get_ndarray(boxes.conf)
         else:
             self.df = pd.DataFrame(columns=COLUMNS)
 
@@ -55,7 +58,7 @@ class ImageInfo:
     
     def boxInfo(self, box_index) -> tuple:
         """Get a list of absolute coordinates of the object with the box_index index, along with confidence level and the object class name"""
-        row: pd.Series = self.df.loc[box_index].loc[["xmin","ymin","xmax","ymax","confidence","class_name"]]
+        row: pd.Series = self.df.loc[box_index].loc[COLUMNS_ABSOLUTE + [COLUMN_CONF, COLUMN_CLASS]]
         *numbers, class_name = row
         return tuple([float(x) for x in numbers] + [class_name])
     
@@ -65,7 +68,7 @@ class ImageInfo:
     
     def relative_center(self, box_index) -> tuple[float,...]:
         """Get relative coordinates of the center of the specific object indexed with box_index"""
-        row: pd.Series = self.df.loc[box_index].loc[["x_center","y_center"]]
+        row: pd.Series = self.df.loc[box_index].loc[[COLUMN_X_C, COLUMN_Y_C]]
         return tuple(float(x) for x in row)
     
     def distance(self, index_one, index_two) -> float:

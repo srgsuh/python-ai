@@ -1,11 +1,14 @@
 import cv2
 import numpy as np
 from dataclasses import dataclass
+from shape_image import ShapeImage
+
+DESC_PATTERN: str = 'circle_x_{x}_y_{y}_r_{r}'
 
 COLOR_GREEN = (0, 255, 0)
 
 @dataclass(frozen=True)
-class CircleImage:
+class CircleImage(ShapeImage):
     center: tuple[int, int]
     radius: int
     w: int
@@ -21,6 +24,10 @@ class CircleImage:
         x, y = x / self.w, y / self.h
         w, h = 2 * self.radius / self.w, 2 * self.radius / self.h
         return f"{obj_index} {x:.6f} {y:.6f} {w:.6f} {h:.6f}"
+    
+    def describe(self) -> str:
+        x, y = self.center
+        return DESC_PATTERN.format(x=x,y=y,r=self.radius)
 
 rng = np.random.default_rng()
 def i_rand(min: int, max: int) -> int:

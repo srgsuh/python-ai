@@ -33,7 +33,7 @@ rng = np.random.default_rng()
 def i_rand(min: int, max: int) -> int:
     return int(rng.integers(min, max + 1, dtype=np.uint32))
 
-def random_circle(img_width: int, img_height: int | None = None) -> CircleImage:
+def random_circle(img_width: int, img_height: int | None = None) -> ShapeImage:
     w, h = img_width, img_width if img_height is None else img_height
     if w < 3 or h < 3:
         raise ValueError("Image is too small to fit a circle")

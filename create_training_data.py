@@ -1,36 +1,54 @@
 import cv2
 import numpy as np
-from create_folders import TRAIN_IMAGES,VAL_IMAGES,TRAIN_LABELS,VAL_LABELS,join_path
+from create_folders import TRAIN_DIR,VAL_DIR,IMAGE_SUB,LABEL_SUB,join_path
+from circle_image import random_circle, CircleImage
+import math
+import os
 
 WIDTH: int = 256
 HEIGHT: int = 256
-COLORS = 256
-COLOR_GREEN = (0, COLORS - 1, 0)
+FNAME_PATTERN = '{ii}_circle_x_{x}_y_{y}_r_{r}'
+IMAGE_EXT = '.jpg'
+LABEL_EXT = '.txt'
 
-def write_circle_img(path: str, x_center: int, y_center: int, radius: int) -> None:
-    img: np.ndarray = np.full((WIDTH, HEIGHT, 3), 0, dtype=np.uint8)
-    cv2.circle(img, (x_center, y_center), radius, COLOR_GREEN, -1)
-    cv2.imwrite(path, img)
+def clear_all_files(root: str):
+    for dirpath, dirnames, filenames in os.walk(root):
+        for filename in filenames:
+            os.remove(os.path.join(dirpath, filename))
 
-def write_circle_label(path: str, x_center: int, y_center: int, radius: int) -> None:
-    x, y = x_center / WIDTH, y_center / HEIGHT
-    w, h = 2 * radius / WIDTH, 2 * radius / HEIGHT
-    with open(path, 'w') as f:
-        f.write(f"0 {x:.6f} {y:.6f} {w:.6f} {h:.6f}")
+def get_img_path(parent_folder: str, f_name: str) -> str:
+    return build_path(parent_folder, IMAGE_SUB, f_name, IMAGE_EXT)
 
+def get_lbl_path(parent_folder: str, f_name: str) -> str:
+    return build_path(parent_folder, LABEL_SUB, f_name, LABEL_EXT)
+
+def write_test_case(parent_folder: str, f_name: str, img: np.ndarray, label: str) -> None:
+    label_path = get_lbl_path(parent_folder, f_name)
+    with open(label_path, 'w') as f:
+        f.write(label)
+    image_path = get_img_path(parent_folder, f_name)
+    cv2.imwrite(image_path, img)
+
+def build_path(parent: str, sub: str, name: str, ext: str) -> str:
+    folder: str = join_path(parent, sub)
+    return join_path(folder, name + ext)
+
+def get_f_name(s_idx: str, c: CircleImage) -> str:
+    x, y = c.center
+    r = c.radius
+    return FNAME_PATTERN.format(ii=s_idx,x=x,y=y,r=r)
+
+def generate_test_circles(parent_folder: str, n_tests: int) -> None:
+    prefix_length: int = math.ceil(math.log10(n_tests))
+    for idx in range(1, n_tests + 1):
+        s_idx = str(idx).zfill(prefix_length)
+        c: CircleImage = random_circle(WIDTH, HEIGHT)
+        f_name = get_f_name(s_idx, c)
+        write_test_case(parent_folder, f_name, c.image(), c.label())
 
 if __name__ == '__main__':
-    write_circle_img(join_path(TRAIN_IMAGES, "img01.jpg"), 100, 100, 25)
-    write_circle_img(join_path(TRAIN_IMAGES, "img02.jpg"), 80, 120, 20)
-    write_circle_img(join_path(TRAIN_IMAGES, "img03.jpg"), 120, 130, 100)
-    write_circle_img(join_path(TRAIN_IMAGES, "img04.jpg"), 200, 70, 50)
-
-    write_circle_label(join_path(TRAIN_LABELS,"img01.txt"), 100, 100, 25)
-    write_circle_label(join_path(TRAIN_LABELS,"img02.txt"), 80, 120, 20)
-    write_circle_label(join_path(TRAIN_LABELS,"img03.txt"), 120, 130, 100)
-    write_circle_label(join_path(TRAIN_LABELS,"img04.txt"), 200, 70, 50)
-
-    write_circle_img(join_path(VAL_IMAGES, "img01.jpg"), 90, 90, 70)
-
-    write_circle_label(join_path(VAL_LABELS, "img01.txt"), 90, 90, 70)
-    
+    clear_all_files(TRAIN_DIR)
+    clear_all_files(VAL_DIR)
+    generate_test_circles(TRAIN_DIR, 50)
+    generate_test_circles(VAL_DIR, 5)
+        

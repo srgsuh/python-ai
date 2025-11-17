@@ -9,3 +9,6 @@ yolov8l.pt
 yolov8m-seg.pt
 yolov8m.pt
 yolov8n.pt
+datasets/**
+!datasets/data.yaml
+runs/**

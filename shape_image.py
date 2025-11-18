@@ -1,5 +1,4 @@
 import numpy as np
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 COLOR_GREEN = (0, 255, 0)
@@ -9,8 +8,7 @@ class ShapeImage(ABC):
     w: int
     h: int
     def __init__(self, w: int, h: int):
-        self.w = w
-        self.h = h
+        self.w, self.h = w, h
 
     def empty_image(self) -> np.ndarray:
         return np.zeros((self.w, self.h, 3), dtype=np.uint8)

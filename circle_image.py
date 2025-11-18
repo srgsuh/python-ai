@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-from shape_image import ShapeImage, i_rand, COLOR_GREEN
+from shape_image import ShapeImage, COLOR_GREEN
+from random import randint
 
 DESC_PATTERN: str = 'circle_x{x}_y{y}_r{r}'
 
@@ -31,10 +32,10 @@ def random_circle(img_width: int, img_height: int | None = None) -> ShapeImage:
     if w < 3 or h < 3:
         raise ValueError("Image is too small to fit a circle")
     min_size: int = min(w, h)
-    radius: int = i_rand(1, (min_size - 1) // 2)
+    radius: int = randint(1, (min_size - 1) // 2)
     diameter: int = 2 * radius + 1
-    left_x: int = i_rand(0, w - diameter)
-    upper_y: int = i_rand(0, h - diameter)
+    left_x: int = randint(0, w - diameter)
+    upper_y: int = randint(0, h - diameter)
 
     center = (left_x + radius, upper_y + radius)
     return CircleImage(w, h, center, radius)

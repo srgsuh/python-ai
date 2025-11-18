@@ -20,14 +20,11 @@ class ShapeImage(ABC):
     @abstractmethod
     def xywh(self) -> tuple[float, float, float, float]:
         pass
+
     @abstractmethod
     def image(self) -> np.ndarray:
         pass
+
     @abstractmethod
     def describe(self) -> str:
         pass
-
-
-rng = np.random.default_rng()
-def i_rand(min: int, max: int) -> int:
-    return int(rng.integers(min, max + 1, dtype=np.uint32))

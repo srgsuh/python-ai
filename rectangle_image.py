@@ -17,7 +17,7 @@ class RectangleImage(ShapeImage):
         return DESC_PATTERN.format(x1=self.xmin,y1=self.ymin,x2=self.xmax,y2=self.ymax)
 
     def __points(self) -> list[list[int]]:
-        """Return all rectangle points in clockwise order starting from the upper left corner"""
+        """Return all rectangle points in the clockwise order starting from the upper left corner"""
         p1 = [self.xmin, self.ymin]
         p2 = [self.xmax, self.ymin]
         p3 = [self.xmax, self.ymax]
@@ -26,7 +26,7 @@ class RectangleImage(ShapeImage):
     
     def image(self) -> np.ndarray:
         img = np.zeros((self.w, self.h, 3), dtype=np.uint8)
-        points = np.array(self.__points, dtype=np.int32)
+        points = np.array(self.__points(), dtype=np.int32)
         cv2.fillPoly(img, [points], (0, 255, 0))
         return img
     

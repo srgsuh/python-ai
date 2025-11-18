@@ -14,6 +14,9 @@ VAL_DIR = join(ROOT_DIR, 'val')
 VAL_IMAGES = join(VAL_DIR, IMAGE_SUB)
 VAL_LABELS = join(VAL_DIR , LABEL_SUB)
 
-if __name__ == "__main__":
+def create_folders() -> None:
     for folder in [TRAIN_IMAGES, TRAIN_LABELS, VAL_IMAGES, VAL_LABELS]:
         os.makedirs(folder, exist_ok=True)
+
+if __name__ == "__main__":
+    create_folders()

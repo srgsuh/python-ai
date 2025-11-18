@@ -20,8 +20,9 @@ class RectangleImage(ShapeImage):
         img = np.zeros((self.w, self.h, 3), dtype=np.uint8)
         points = np.array(
             [[self.xmin,self.ymin],[self.xmax,self.ymin],[self.xmax,self.ymax],[self.xmin,self.ymax]]
+            ,dtype=np.int32
         )
-        cv2.fillPoly(img, [points], (255, 0, 0), -1)
+        cv2.fillPoly(img, [points], (255, 0, 0))
         return img
     
     def xywh(self) -> tuple[float, float, float, float]:

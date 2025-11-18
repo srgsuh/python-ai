@@ -15,7 +15,7 @@ class CircleImage(ShapeImage):
         return x, y, w, h
 
     def draw(self, canvas: cv2.typing.MatLike) -> None:
-        cv2.circle(canvas, self.center, self.radius, (0, 255, 0))
+        cv2.circle(canvas, self.center, self.radius, (0, 255, 0), -1)
 
 def random_circle(w: int, h: int, min_radius: int = 5) -> ShapeImage:
     """

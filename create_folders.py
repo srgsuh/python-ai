@@ -1,8 +1,5 @@
 import os
 
-def make_dir(dir_path: str) -> None:
-    os.makedirs(dir_path, exist_ok=True)
-
 def join_path(parent_dir_path: str, inner_obj_name: str) -> str:
     return parent_dir_path + os.sep + inner_obj_name
 
@@ -20,4 +17,4 @@ VAL_IMAGES = join_path(VAL_DIR, IMAGE_SUB)
 VAL_LABELS = join_path(VAL_DIR , LABEL_SUB)
 
 for folder in [TRAIN_IMAGES, TRAIN_LABELS, VAL_IMAGES, VAL_LABELS]:
-    make_dir(folder)
+    os.makedirs(folder, exist_ok=True)

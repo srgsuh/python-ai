@@ -1,9 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
 
-COLOR_GREEN = (0, 255, 0)
-COLOR_BLUE = (255, 0, 0)
-
 class ShapeImage(ABC):
     def __init__(self, w: int, h: int):
         self.w, self.h = w, h

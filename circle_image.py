@@ -1,21 +1,20 @@
 import cv2
-from shape_image import ShapeImage
-from random import randint
+from shape_image import ShapeImage, Color, colors, DEFAULT_COLOR
+from random import randint, choice
 
 class CircleImage(ShapeImage):
-    def __init__(self, w: int, h: int,  center: tuple[int, int], radius: int):
-        super().__init__(w, h)
+    def __init__(self, center: tuple[int, int], radius: int, color: Color = DEFAULT_COLOR):
         self.center = center
         self.radius = radius
+        self.color = color
 
     def xywh(self) -> tuple[float, float, float, float]:
         x, y = self.center
-        x, y = x / self.w, y / self.h
-        w, h = 2 * self.radius / self.w, 2 * self.radius / self.h
-        return x, y, w, h
+        d = 2 * self.radius
+        return x, y, d, d
 
     def draw(self, canvas: cv2.typing.MatLike) -> None:
-        cv2.circle(canvas, self.center, self.radius, (0, 255, 0), -1)
+        cv2.circle(canvas, self.center, self.radius, self.color, -1)
 
 def random_circle(w: int, h: int, min_radius: int = 5) -> ShapeImage:
     """
@@ -32,6 +31,6 @@ def random_circle(w: int, h: int, min_radius: int = 5) -> ShapeImage:
     upper_y: int = randint(0, h - diameter)
 
     center = (left_x + radius, upper_y + radius)
-    return CircleImage(w, h, center, radius)
+    return CircleImage(center, radius, choice(colors))
 
         

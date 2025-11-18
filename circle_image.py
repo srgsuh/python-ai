@@ -18,8 +18,8 @@ class CircleImage(ShapeImage):
         return x, y, w, h
 
     def image(self) -> np.ndarray:
-        img: np.ndarray = super().empty_image()
-        cv2.circle(img, self.center, self.radius, COLOR_GREEN, -1)
+        img: np.ndarray = np.zeros((self.w, self.h, 3), dtype=np.uint8)
+        cv2.circle(img, self.center, self.radius, (0, 255, 0), -1)
         return img
     
     def describe(self) -> str:

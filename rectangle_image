@@ -16,7 +16,7 @@ class RectangleImage(ShapeImage):
         return DESC_PATTERN.format(x1=self.xmin,y1=self.ymin,x2=self.xmax,y2=self.ymax)
 
     def image(self) -> np.ndarray:
-        img = super().empty_image()
+        img = np.zeros((self.w, self.h, 3), dtype=np.uint8)
         points = np.array(
             [[self.xmin,self.ymin],[self.xmax,self.ymin],[self.xmax,self.ymax],[self.xmin,self.ymax]]
         )

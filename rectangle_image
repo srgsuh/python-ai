@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from shape_image import ShapeImage
+from random import randint
 
 DESC_PATTERN: str = 'rect_x{x1}_y{y1}_x{x2}_y{y2}'
 
@@ -30,3 +31,15 @@ class RectangleImage(ShapeImage):
         y: float = (self.ymin + 0.5*h) / self.h
         return x, y, w / self.w, h / self.h
         
+def random_rectangle(w: int, h: int, min_side: int = 5) -> ShapeImage:
+    """
+    Generate an image of size (w × h) containing a randomly positioned rectangle.
+    The rectangle's sides is chosen randomly but each of then at least `min_side` pixels.
+    """
+    if w < min_side or h < min_side:
+        raise ValueError("The image is too small to contain a rectangle of the given minimum side.")
+    xmin: int = randint(0, w - min_side)
+    ymin: int = randint(0, h - min_side)
+    xmax: int = randint(xmin + min_side, w)
+    ymax: int = randint(ymin + min_side, h)
+    return RectangleImage(w, h, xmin, ymin, xmax, ymax)

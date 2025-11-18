@@ -1,37 +1,30 @@
 import cv2
 import numpy as np
-from dataclasses import dataclass
-from shape_image import ShapeImage
+from shape_image import ShapeImage, i_rand, COLOR_GREEN
 
-DESC_PATTERN: str = 'circle_x_{x}_y_{y}_r_{r}'
+DESC_PATTERN: str = 'circle_x{x}_y{y}_r{r}'
 
-COLOR_GREEN = (0, 255, 0)
-
-@dataclass(frozen=True)
 class CircleImage(ShapeImage):
-    center: tuple[int, int]
-    radius: int
-    w: int
-    h: int
+    def __init__(self, w: int, h: int,  center: tuple[int, int], radius: int):
+        super().__init__(w, h)
+        self.center = center
+        self.radius = radius
 
-    def image(self) -> np.ndarray:
-        img: np.ndarray = np.zeros((self.w, self.h, 3), dtype=np.uint8)
-        cv2.circle(img, self.center, self.radius, COLOR_GREEN, -1)
-        return img
-    
-    def label(self, obj_index: int = 0) -> str:
+    def xywh(self) -> tuple[float, float, float, float]:
         x, y = self.center
         x, y = x / self.w, y / self.h
         w, h = 2 * self.radius / self.w, 2 * self.radius / self.h
-        return f"{obj_index} {x:.6f} {y:.6f} {w:.6f} {h:.6f}"
+        return x, y, w, h
+
+    def image(self) -> np.ndarray:
+        img: np.ndarray = super().empty_image()
+        cv2.circle(img, self.center, self.radius, COLOR_GREEN, -1)
+        return img
     
     def describe(self) -> str:
         x, y = self.center
         return DESC_PATTERN.format(x=x,y=y,r=self.radius)
 
-rng = np.random.default_rng()
-def i_rand(min: int, max: int) -> int:
-    return int(rng.integers(min, max + 1, dtype=np.uint32))
 
 def random_circle(img_width: int, img_height: int | None = None) -> ShapeImage:
     w, h = img_width, img_width if img_height is None else img_height
@@ -44,6 +37,6 @@ def random_circle(img_width: int, img_height: int | None = None) -> ShapeImage:
     upper_y: int = i_rand(0, h - diameter)
 
     center = (left_x + radius, upper_y + radius)
-    return CircleImage(center, radius, w, h)
+    return CircleImage(w, h, center, radius)
 
         

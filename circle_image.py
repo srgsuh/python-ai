@@ -1,9 +1,6 @@
 import cv2
-import numpy as np
 from shape_image import ShapeImage
 from random import randint
-
-DESC_PATTERN: str = 'circle_x{x}_y{y}_r{r}'
 
 class CircleImage(ShapeImage):
     def __init__(self, w: int, h: int,  center: tuple[int, int], radius: int):
@@ -17,15 +14,8 @@ class CircleImage(ShapeImage):
         w, h = 2 * self.radius / self.w, 2 * self.radius / self.h
         return x, y, w, h
 
-    def image(self) -> np.ndarray:
-        img: np.ndarray = np.zeros((self.w, self.h, 3), dtype=np.uint8)
-        cv2.circle(img, self.center, self.radius, (0, 255, 0), -1)
-        return img
-    
-    def describe(self) -> str:
-        x, y = self.center
-        return DESC_PATTERN.format(x=x,y=y,r=self.radius)
-
+    def draw(self, canvas: cv2.typing.MatLike) -> None:
+        cv2.circle(canvas, self.center, self.radius, (0, 255, 0))
 
 def random_circle(w: int, h: int, min_radius: int = 5) -> ShapeImage:
     """

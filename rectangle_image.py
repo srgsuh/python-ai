@@ -3,8 +3,6 @@ import numpy as np
 from shape_image import ShapeImage
 from random import randint
 
-DESC_PATTERN: str = 'rect_x{x1}_y{y1}_x{x2}_y{y2}'
-
 class RectangleImage(ShapeImage):
     def __init__(self, w: int, h: int, x1: int, y1: int, x2: int, y2: int):
         super().__init__(w, h)
@@ -12,9 +10,6 @@ class RectangleImage(ShapeImage):
         ymin, ymax = min(y1, y2), max(y1, y2)
         self.xmin, self.ymin = xmin, ymin
         self.xmax, self.ymax = xmax, ymax
-    
-    def describe(self) -> str:
-        return DESC_PATTERN.format(x1=self.xmin,y1=self.ymin,x2=self.xmax,y2=self.ymax)
 
     def __points(self) -> list[list[int]]:
         """Return all rectangle points in the clockwise order starting from the upper left corner"""
@@ -24,11 +19,9 @@ class RectangleImage(ShapeImage):
         p4 = [self.xmin, self.ymax]
         return [p1, p2, p3, p4]
     
-    def image(self) -> np.ndarray:
-        img = np.zeros((self.w, self.h, 3), dtype=np.uint8)
+    def draw(self, canvas: cv2.typing.MatLike) -> None:
         points = np.array(self.__points(), dtype=np.int32)
-        cv2.fillPoly(img, [points], (0, 255, 0))
-        return img
+        cv2.fillPoly(canvas, [points], (0, 255, 0))
     
     def xywh(self) -> tuple[float, float, float, float]:
         w: float = self.xmax - self.xmin

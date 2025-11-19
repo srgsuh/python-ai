@@ -1,7 +1,0 @@
-path: ./datasets
-train: train/images
-val: val/images
-nc: 2
-names:
-  0: 'circle'
-  1: 'rectangle'

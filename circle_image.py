@@ -31,6 +31,6 @@ def random_circle(w: int, h: int, min_radius: int = 5) -> ShapeImage:
     upper_y: int = randint(0, h - diameter)
 
     center = (left_x + radius, upper_y + radius)
-    return CircleImage(center, radius, choice(colors))
+    return CircleImage(center, radius)
 
         

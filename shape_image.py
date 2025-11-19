@@ -3,6 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 
 Color = tuple[int,int,int]
+
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -17,16 +18,22 @@ class ShapeImage(ABC):
         return f"{obj_index} {x/width:.6f} {y/height:.6f} {w/width:.6f} {h/height:.6f}"
     
     def image(self, width: int, height: int) -> np.ndarray:
-        img = np.zeros((width, height, 3), dtype=np.uint8)
+        img = np.full((width, height, 3), 0, dtype=np.uint8 )
         self.draw(img)
         return img
 
     @abstractmethod
     def xywh(self) -> tuple[float, float, float, float]:
+        """
+        Return a tuple of four floats x, y, w, h, where:
+            x, y - coordinates of the center of the shape's box
+            w, h - width and height of the shape's box
+        """
         pass
 
     @abstractmethod
     def draw(self, canvas: cv2.typing.MatLike) -> None:
+        """Draw the shape on a canvas"""
         pass
         
 

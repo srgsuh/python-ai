@@ -1,10 +1,8 @@
 import cv2
 import numpy as np
-from shape_image import ShapeImage, Color, DEFAULT_COLOR, colors
+from shape_image import ShapeImage, Color, DEFAULT_COLOR
 from random import randint, choice
 import math
-
-DEFAULT_COLOR = DEFAULT_COLOR = (0, 0, 255)
 
 class RectangleImage(ShapeImage):
     def __init__(self, x: int, y: int,
@@ -21,7 +19,7 @@ class RectangleImage(ShapeImage):
         alpha : float - Rotation angle in radians between the bottom side and the x-axis.
         Expected to be in the range [0, pi/2). For alpha = 0 the rectangle is axis-aligned.
         For alpha > 0 the rectangle is rotated counterclockwise around its bottom-left vertex.
-        color : tuple[int, int, int] - color in BGR format.
+        color : Color - color in RGB format.
         """
         self.color = color
 
@@ -61,22 +59,22 @@ class RectangleImage(ShapeImage):
         cv2.fillPoly(canvas, [points], self.color)
 
     def points(self) -> list[tuple[float, float]]:
-        """Return all rectangle points in the clockwise order starting from the upper h_side corner"""
+        """Return all rectangle vertices in a clockwise order starting from a bottom-left corner"""
         return [self.p1, self.p2, self.p3, self.p4]
 
 angles: list[float] = [math.radians(x) for x in range(0, 90, 15)]
 
-def random_rectangle(w: int, h: int, min_side = 15) -> ShapeImage:
+def random_rectangle(w: int, h: int, min_side = 20) -> ShapeImage:
     max_w = math.floor(w / 3)
     max_h = math.floor(h / math.sqrt(2))
     max_side = min(max_h, max_w)
     if min_side > max_side:
         raise ValueError("The image is too small to contain a rectangle of the given minimum side.")
     x = randint(max_side, w - max_side)
-    y = randint(max_side, math.floor(max_side * math.sqrt(2)))
+    y = randint(math.floor(max_side * math.sqrt(2)), h)
     h_side = randint(min_side, max_side)
     w_side = randint(min_side, max_side)
     alpha = choice(angles)
 
-    return RectangleImage(x, y, h_side, w_side, alpha, choice(colors))
+    return RectangleImage(x, y, h_side, w_side, choice(angles))
     

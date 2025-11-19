@@ -23,8 +23,9 @@ def generate_training_cases(parent_folder: str, n_tests: int) -> None:
     for idx in range(1, n_tests + 1):
         circle: ShapeImage = random_circle(WIDTH, HEIGHT, 8)
         rect: ShapeImage = random_rectangle(WIDTH, HEIGHT)
-        write_training_case(parent_folder, 'circle_'+str(idx).zfill(3), circle, 0)
         write_training_case(parent_folder, 'rectangle_'+str(idx).zfill(3), rect, 1)
+        write_training_case(parent_folder, 'circle_'+str(idx).zfill(3), circle, 0)
+        
 
 if __name__ == '__main__':
     empty_folders(TRAIN_DIR, VAL_DIR)

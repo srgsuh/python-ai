@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from shape_image import ShapeImage, Color, DEFAULT_COLOR
+from shape_image import ShapeImage, Color, colors, DEFAULT_COLOR
 from random import randint, choice
 import math
 
@@ -76,5 +76,5 @@ def random_rectangle(w: int, h: int, min_side = 20) -> ShapeImage:
     w_side = randint(min_side, max_side)
     alpha = choice(angles)
 
-    return RectangleImage(x, y, h_side, w_side, choice(angles))
+    return RectangleImage(x, y, h_side, w_side, choice(angles), choice(colors))
     

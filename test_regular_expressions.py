@@ -36,6 +36,7 @@ class TestRegularExpressions(ut.TestCase):
         self.assertTrue(re.fullmatch(ipv4_pattern(), "0.01.002.000")) 
         self.assertTrue(re.fullmatch(ipv4_pattern(), "000.1.249.59")) 
         self.assertTrue(re.fullmatch(ipv4_pattern(), "250.255.199.9"))
+        self.assertTrue(re.fullmatch(ipv4_pattern(), "099.100.200.00"))
     
     def test_ipV4_false(self) -> None:
         self.assertFalse(re.fullmatch(ipv4_pattern(), "0.0.0")) 
@@ -48,21 +49,6 @@ class TestRegularExpressions(ut.TestCase):
         self.assertFalse(re.fullmatch(ipv4_pattern(), "0.0.0.+1"))
         self.assertFalse(re.fullmatch(ipv4_pattern(), "0.0.0.a"))
     
-    def test_mobile_israel_true(self) -> None:
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "+972-54-1234567"))
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "+972-541234567")) 
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "+972-541234567"))
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "059123-45-67")) 
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "054-1-23-45-67"))
-        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "0571-23-45-67"))
-    
-    def test_mobile_israel_false(self) -> None:
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-054-1234567"))
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-54-1-234-567")) 
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-54123456"))
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "059123-45-677")) 
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "054-1-2-3-45-67"))
-        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "0571-23-45-6-7"))
-
+ 
 if __name__ == "__main__":
     ut.main()

@@ -56,6 +56,11 @@ class TestRegularExpressions(ut.TestCase):
         self.assertTrue(re.fullmatch(israel_mobile_pattern(), "059123-45-67")) 
         self.assertTrue(re.fullmatch(israel_mobile_pattern(), "054-1-23-45-67"))
         self.assertTrue(re.fullmatch(israel_mobile_pattern(), "0571-23-45-67"))
+
+        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "057-123-45-67"))
+        self.assertTrue(re.fullmatch(israel_mobile_pattern(), "057123-45-67"))
+
+    
     def test_mobile_israel_false(self) -> None:
         self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-054-1234567"))
         self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-54-1-234-567")) 
@@ -63,6 +68,15 @@ class TestRegularExpressions(ut.TestCase):
         self.assertFalse(re.fullmatch(israel_mobile_pattern(), "059123-45-677")) 
         self.assertFalse(re.fullmatch(israel_mobile_pattern(), "054-1-2-3-45-67"))
         self.assertFalse(re.fullmatch(israel_mobile_pattern(), "0571-23-45-6-7"))
+
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-5123-45-67"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "05123-45-67"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "05123-45-67"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "050--1-22-22-22"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "067-123-45-67"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "05a-123-45-67"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972541234567"))
+        self.assertFalse(re.fullmatch(israel_mobile_pattern(), "+972-44-1234567"))
  
 if __name__ == "__main__":
     ut.main()

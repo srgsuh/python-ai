@@ -12,7 +12,5 @@ strings: list[str] = [
 text = "\n".join(strings)
 
 ip_pattern = regex.ipv4_pattern()
-ip_match: re.Match | None = re.search(ip_pattern, text)
-if ip_match is not None:
-    ip_mo: re.Match = ip_match
-    print(f"IP address: = {ip_mo.group()}, indices from {ip_mo.start()} to {ip_mo.end()}")
+for mo in re.finditer(ip_pattern, text):
+    print(mo.group())

@@ -1,30 +1,42 @@
-import operator as op
+from typing import Callable, Iterable
+from regular_expressions import unsigned_float_number_pattern
+import operator
 import re
 
-__operations: dict = {
-    '+': op.add,
-    '-': op.sub,
-    '*': op.mul,
-    '/': op.floordiv,
-    '**': op.pow
+__operations: dict[str, Callable[[float, float], float]] = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+    '/': operator.truediv,
+    '**': operator.pow
 }
 
-def __binCompute(op1: int, op2: int, operation: str) -> int:
-    operator = __operations.get(operation)
-    assert operator is not None, f"Operation {operation} not found"
-    return operator(op1, op2)
+def iterable_pattern(iterable: Iterable) -> str:
+    keys_str = "|".join([re.escape(k) for k in iterable])
+    return rf"(?:{keys_str})"
 
-def __eval_no_parentheses(expr: str) -> int:
-    operands: list[str] = re.split(r"[/*+-]+", expr)
-    operators: list[str] = re.split(r"\d+", expr)
-    assert operands is not None and  operators is not None, "Illegal expression"
-    res = int(operands[0])
+__NUMBER_PATTERN: str = unsigned_float_number_pattern()
+__OPERATION_PATTERN = iterable_pattern(__operations)
+
+def __compute_one(op1: float, op2: float, operation_sign: str) -> float:
+    operation_function = __operations.get(operation_sign)
+    if operation_function is None:
+        raise ValueError(f"Unsupported operation: {operation_sign}.")
+    return operation_function(op1, op2)
+
+def __eval_no_parentheses(expr: str) -> float:
+    operands: list[str] = re.split(__OPERATION_PATTERN, expr)
+    operations: list[str] = re.split(__NUMBER_PATTERN, expr)
+    print(__NUMBER_PATTERN, __OPERATION_PATTERN)
+    
+    assert operands is not None and  operations is not None, "Illegal expression"
+    res = float(operands[0])
     for i in range(1, len(operands)):
-        res = __binCompute(res, int(operands[i]), operators[i])
+        res = __compute_one(res, float(operands[i]), operations[i])
     
     return res
 
-def eval(expr: str) -> int:
+def eval(expr: str) -> float:
     expr = re.sub(r"\s+", "", expr)
     while mo := re.search(r"\([^()]+\)", expr):
         inner = mo.group()[1:-1]

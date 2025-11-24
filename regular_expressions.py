@@ -26,7 +26,7 @@ def israel_mobile_pattern() -> str:
     return r"(\+972-|0)5\d-?(\d{7}|(\d-?\d{2}-\d{2}-\d{2}))"
 
 def unsigned_float_number_pattern() -> str:
-    return r"(?:(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)"
+    return r"(?:(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)"
 
 def float_number_pattern() -> str:
     ufn_format: str = unsigned_float_number_pattern()

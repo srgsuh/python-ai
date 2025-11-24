@@ -86,13 +86,18 @@ class TestRegularExpressions(ut.TestCase):
         float_pattern: str = regex.float_number_pattern()
         self.assertTrue(re.fullmatch(float_pattern, "1.0"))
         self.assertTrue(re.fullmatch(float_pattern, ".0"))
+        self.assertTrue(re.fullmatch(float_pattern, "0."))
         self.assertTrue(re.fullmatch(float_pattern, "100"))
         self.assertTrue(re.fullmatch(float_pattern, "-1e-6"))
         self.assertTrue(re.fullmatch(float_pattern, "6.02e-23"))
+        self.assertTrue(re.fullmatch(float_pattern, ".271828e+1"))
+        self.assertTrue(re.fullmatch(float_pattern, "+3.141592e0"))
     
     def test_float_number_false(self) -> None:
         float_pattern: str = regex.float_number_pattern()
         self.assertIsNone(re.fullmatch(float_pattern, "."))
+        self.assertIsNone(re.fullmatch(float_pattern, "+"))
+        self.assertIsNone(re.fullmatch(float_pattern, "-"))
         self.assertIsNone(re.fullmatch(float_pattern, "1.0.0"))
         self.assertIsNone(re.fullmatch(float_pattern, "100e2e4"))
         self.assertIsNone(re.fullmatch(float_pattern, "e-2"))
@@ -101,6 +106,33 @@ class TestRegularExpressions(ut.TestCase):
         self.assertIsNone(re.fullmatch(float_pattern, "1.1 01"))
         self.assertIsNone(re.fullmatch(float_pattern, "1..01"))
         self.assertIsNone(re.fullmatch(float_pattern, "1e-"))
+    
+    def test_unsigned_float_format_true(self) -> None:
+        float_pattern: str = regex.unsigned_float_number_pattern()
+        self.assertTrue(re.fullmatch(float_pattern, "1.0"))
+        self.assertTrue(re.fullmatch(float_pattern, ".0"))
+        self.assertTrue(re.fullmatch(float_pattern, "0."))
+        self.assertTrue(re.fullmatch(float_pattern, "100"))
+        self.assertTrue(re.fullmatch(float_pattern, "6.02e-23"))
+        self.assertTrue(re.fullmatch(float_pattern, ".271828e+1"))
+    
+    def test_unsigned_float_number_false(self) -> None:
+        float_pattern: str = regex.unsigned_float_number_pattern()
+        self.assertIsNone(re.fullmatch(float_pattern, "."))
+        self.assertIsNone(re.fullmatch(float_pattern, "+"))
+        self.assertIsNone(re.fullmatch(float_pattern, "-"))
+        self.assertIsNone(re.fullmatch(float_pattern, "1.0.0"))
+        self.assertIsNone(re.fullmatch(float_pattern, "100e2e4"))
+        self.assertIsNone(re.fullmatch(float_pattern, "e-2"))
+        self.assertIsNone(re.fullmatch(float_pattern, "++0"))
+        self.assertIsNone(re.fullmatch(float_pattern, "+-1"))
+        self.assertIsNone(re.fullmatch(float_pattern, "1.1 01"))
+        self.assertIsNone(re.fullmatch(float_pattern, "1..01"))
+        self.assertIsNone(re.fullmatch(float_pattern, "1e-"))
+        self.assertIsNone(re.fullmatch(float_pattern, "+3.141592e0"))
+        self.assertIsNone(re.fullmatch(float_pattern, "-1e-6"))
+        self.assertIsNone(re.fullmatch(float_pattern, "+1"))
+        self.assertIsNone(re.fullmatch(float_pattern, "-10.25"))
  
 if __name__ == "__main__":
     ut.main()

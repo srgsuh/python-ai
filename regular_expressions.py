@@ -24,3 +24,6 @@ def israel_mobile_pattern() -> str:
     """
     
     return r"(\+972-|0)5\d-?(\d{7}|(\d-?\d{2}-\d{2}-\d{2}))"
+
+def float_number_pattern() -> str:
+    return r"[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?"

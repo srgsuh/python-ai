@@ -1,5 +1,6 @@
 from typing import Callable
 from regular_expressions import unsigned_float_number_pattern, iterable_items_pattern
+from utils import is_parentheses_pairing
 import operator
 import re
 
@@ -31,18 +32,9 @@ def __eval_no_parentheses(expr: str) -> float:
     
     return res
 
-def __is_parentheses_pairing(expr: str) -> bool:
-    opened_count: int = 0
-    for c in expr:
-        opened_count += 1 if c == '(' else (-1 if c == ')' else 0)
-        if opened_count < 0:
-            break
-            
-    return opened_count == 0
-
 def eval(expr: str) -> float:
     expr = re.sub(r"\s+", "", expr)
-    if not __is_parentheses_pairing(expr):
+    if not is_parentheses_pairing(expr):
         raise ValueError(f"Incorrect expression: {expr}")
     while mo := re.search(r"\([^()]+\)", expr):
         inner = mo.group()[1:-1]

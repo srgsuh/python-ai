@@ -36,13 +36,15 @@ class TestRegularExpressions(ut.TestCase):
     
     def test_unsigned_float_format_true(self) -> None:
         float_pattern: str = self.unsigned_pattern
+        self.assertTrue(re.fullmatch(float_pattern, "0"))
         self.assertTrue(re.fullmatch(float_pattern, "1.0"))
         self.assertTrue(re.fullmatch(float_pattern, ".0"))
         self.assertTrue(re.fullmatch(float_pattern, "0."))
         self.assertTrue(re.fullmatch(float_pattern, "100"))
         self.assertTrue(re.fullmatch(float_pattern, "1e-4"))
-        self.assertTrue(re.fullmatch(float_pattern, "6.02e-23"))
+        self.assertTrue(re.fullmatch(float_pattern, "6.022e-23"))
         self.assertTrue(re.fullmatch(float_pattern, ".271828e+1"))
+        self.assertTrue(re.fullmatch(float_pattern, ".3141592e1"))
     
     def test_unsigned_float_number_false(self) -> None:
         float_pattern: str = self.unsigned_pattern

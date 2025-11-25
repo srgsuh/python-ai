@@ -1,5 +1,5 @@
 from typing import Callable
-from regular_expressions import unsigned_float_number_pattern
+from regular_expressions import unsigned_float_number_pattern, iterable_items_pattern
 import operator
 import re
 
@@ -12,7 +12,7 @@ __operations: dict[str, Callable[[float, float], float]] = {
 }
 
 __NUMBER_PATTERN: str = unsigned_float_number_pattern()
-__OPERATION_PATTERN = rf"(?:{'|'.join([re.escape(k) for k in __operations])})"
+__OPERATION_PATTERN: str = iterable_items_pattern(__operations)
 
 def __compute_one(op1: float, op2: float, operation_sign: str) -> float:
     operation_function = __operations.get(operation_sign)

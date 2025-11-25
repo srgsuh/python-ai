@@ -8,6 +8,8 @@ class TestRegularExpressions(ut.TestCase):
         self.unsigned_pattern: str = regex.unsigned_float_number_pattern()
         self.op_pattern: str = regex.arithmetic_operations_pattern()
         self.expr_pattern = regex.ltr_no_parentheses_expr(self.unsigned_pattern, self.op_pattern)
+        self.full_expression: str = regex.ltr_expression(self.unsigned_pattern, self.op_pattern)
+        self.full_pattern: re.Pattern = re.compile(self.full_expression)
 
     def test_float_number_true(self) -> None:
         float_pattern: str = self.signed_pattern
@@ -98,6 +100,19 @@ class TestRegularExpressions(ut.TestCase):
         self.assertIsNone(re.fullmatch(expr_pattern, '/'))
         self.assertIsNone(re.fullmatch(expr_pattern, '1**'))
 
+    def ltr_expression_true(self) -> None:
+        pattern: re.Pattern = self.full_pattern
+        self.assertTrue(pattern.fullmatch(".3141592e1"))
+        self.assertTrue(pattern.fullmatch("(.3141592e1)"))
+        self.assertTrue(pattern.fullmatch("(7+1.0/2.0)*((2.0)**(1-2e-1))"))
+        self.assertTrue(pattern.fullmatch("(1+2.0-(3e+1-1+1-1+0))-1e-2-1e+1-(7)"))
+    
+    def ltr_expression_false(self) -> None:
+        pattern: re.Pattern = self.full_pattern
+        self.assertFalse(pattern.fullmatch("*1"))
+        self.assertFalse(pattern.fullmatch("3+"))
+        self.assertFalse(pattern.fullmatch("1+/2"))
+        self.assertTrue(pattern.fullmatch("(.3141592e1)()"))
  
 if __name__ == "__main__":
     ut.main()

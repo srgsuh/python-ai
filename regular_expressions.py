@@ -23,6 +23,14 @@ def ltr_no_parentheses_expr(num_pattern: str, op_pattern: str) -> str:
     """
     return rf"(?:{num_pattern}{op_pattern})*{num_pattern}"
 
-def ltr_expression(number_pattern: str, op_pt: str) -> str:
-    num_with_par: str = rf"(?:\(*{number_pattern}\)*)"
-    return rf"(?:{num_with_par}(?:{op_pt}{num_with_par})*)"
+def ltr_expression(number_pattern: str, operation_pattern: str) -> str:
+    """Define a pattern that matches arithmetical expression, containing parentheses,
+    numbers in a format defined by the `number_pattern` and a set of operations,
+    defined by the `operation_pattern`. Expression does not check parentheses pairing.
+    """
+    operand: str = rf"(?:\(*{number_pattern}\)*)"
+    return rf"(?:{operand}(?:{operation_pattern}{operand})*)"
+
+def inner_expression() -> str:
+    """Define an expression inside the parentheses, that does not itself contains any parentheses"""
+    return r"\([^()]+\)"

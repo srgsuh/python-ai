@@ -22,3 +22,7 @@ def ltr_no_parentheses_expr(num_pattern: str, op_pattern: str) -> str:
     with binary operations defined in the `op_pattern` and numbers in the format defined by the `num_pattern`
     """
     return rf"(?:{num_pattern}{op_pattern})*{num_pattern}"
+
+def ltr_expression(number_pattern: str, op_pt: str) -> str:
+    num_with_par: str = rf"(?:\(*{number_pattern}\)*)"
+    return rf"(?:{num_with_par}(?:{op_pt}{num_with_par})*)"

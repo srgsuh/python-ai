@@ -4,11 +4,11 @@ import operator
 from re import Pattern, compile
 
 __operations: dict[str, Callable[[float, float], float]] = {
+    '**': operator.pow,
     '+': operator.add,
     '-': operator.sub,
     '*': operator.mul,
-    '/': operator.truediv,
-    '**': operator.pow
+    '/': operator.truediv
 }
 
 def get_operation(operation_sign: str) -> Callable[[float, float], float]:

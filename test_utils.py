@@ -14,6 +14,7 @@ class TestUtils(ut.TestCase):
         self.assertFalse(is_parentheses_pairing(")"))
         self.assertFalse(is_parentheses_pairing("(2 + 3)**(7))"))
         self.assertFalse(is_parentheses_pairing("((7 + 8)/(2 - 11)"))
+        self.assertFalse(is_parentheses_pairing("(1+2))*((7+0)"))
 
 if __name__ == '__main__':
     ut.main()

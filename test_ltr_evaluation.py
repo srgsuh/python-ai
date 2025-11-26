@@ -42,7 +42,7 @@ class testLtrEvaluation(ut.TestCase):
         with self.assertRaises(ValueError):
             eval("(2 + 1)//2")
         with self.assertRaises(ValueError):
-            eval("(2 + 1)//2")
+            eval("(2 + 1)2")
     
 if __name__ == "__main__":
     ut.main()

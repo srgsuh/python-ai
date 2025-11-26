@@ -17,7 +17,6 @@ def __eval_no_parentheses(expr: str) -> float:
     res = float(operands[0])
     for i in range(1, len(operands)):
         res = __compute_one(res, float(operands[i]), operations[i])
-    print(f"result = {res}")
     return res
 
 def eval(expr: str) -> float:

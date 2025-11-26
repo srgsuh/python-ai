@@ -15,7 +15,7 @@ def iterable_items_pattern(iterable: Iterable) -> str:
 
 def arithmetic_operations_pattern() -> str:
     """"Define a pattern that matches any of the following arithmetic operations: +, -, /, * and **"""
-    return iterable_items_pattern(['+','-','*','/','**'])
+    return iterable_items_pattern(['**','*','/','+','-'])
 
 def ltr_no_parentheses_expr(num_pattern: str, op_pattern: str) -> str:
     """Define a pattern for the valid arithmetic expression that does not contain parentheses

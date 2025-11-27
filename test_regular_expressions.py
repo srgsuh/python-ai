@@ -10,7 +10,6 @@ class TestRegularExpressions(ut.TestCase):
         self.expr_pattern = regex.ltr_no_parentheses_expr(self.unsigned_pattern, self.op_pattern)
         self.full_expression: str = regex.ltr_expression(self.unsigned_pattern, self.op_pattern)
         self.full_pattern: re.Pattern = re.compile(self.full_expression)
-        print("FULL PATTERN: ", self.full_pattern.pattern)
 
     def test_float_number_true(self) -> None:
         float_pattern: str = self.signed_pattern

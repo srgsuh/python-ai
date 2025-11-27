@@ -8,7 +8,7 @@ def unsigned_float_number_pattern() -> str:
 def float_number_pattern() -> str:
     """Define a pattern for the signed float number"""
     ufn_format: str = unsigned_float_number_pattern()
-    return rf"[+-]?{ufn_format}"
+    return rf"(?:[+-]?{ufn_format})"
 
 def iterable_items_pattern(iterable: Iterable) -> str:
     return rf"(?:{'|'.join([re.escape(str(k)) for k in iterable])})"

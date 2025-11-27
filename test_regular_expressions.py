@@ -100,20 +100,28 @@ class TestRegularExpressions(ut.TestCase):
         self.assertIsNone(re.fullmatch(expr_pattern, '/'))
         self.assertIsNone(re.fullmatch(expr_pattern, '1**'))
 
-    def ltr_expression_true(self) -> None:
+    def test_ltr_expression_true(self) -> None:
         pattern: re.Pattern = self.full_pattern
+        
         self.assertTrue(pattern.fullmatch(".3141592e1"))
-        self.assertTrue(pattern.fullmatch("(.3141592e1)"))
-        self.assertTrue(pattern.fullmatch("(1+((2+((3-(4/(7**(2/1.0*9.0**(8-(7/(2)))))))))-(8**2.0e1))/1.0)"))
-        self.assertTrue(pattern.fullmatch("(7+1.0/2.0)*((2.0)**(1-2e-1))"))
+        self.assertTrue(pattern.fullmatch("((((1E+2))))"))
+        self.assertTrue(pattern.fullmatch("(100)"))
+        self.assertTrue(pattern.fullmatch("    1.0     "))
+        self.assertTrue(pattern.fullmatch("  (  (  1.0     ))"))
+        self.assertTrue(pattern.fullmatch("(     .3141592e1)"))
+        self.assertTrue(pattern.fullmatch("(1+((2+((3-(4/(7**(2/1.0 *9.0**(8-(7/(2)))))))))-(8**2.0e1))/1.0)"))
+        self.assertTrue(pattern.fullmatch("(  7+ 1.0/2.0)*((2.0)**(1-2e-1))"))
         self.assertTrue(pattern.fullmatch("(1+2.0-(3e+1-1+1-1+0))-1e-2-1e+1-(7)"))
+        self.assertTrue(pattern.fullmatch("  (  ( (( 5 - 1 )   * (2-1))))"))
     
-    def ltr_expression_false(self) -> None:
+    def test_ltr_expression_false(self) -> None:
         pattern: re.Pattern = self.full_pattern
         self.assertFalse(pattern.fullmatch("*1"))
         self.assertFalse(pattern.fullmatch("3+"))
         self.assertFalse(pattern.fullmatch("1+/2"))
-        self.assertTrue(pattern.fullmatch("(.3141592e1)()"))
+        self.assertFalse(pattern.fullmatch("(.3141592e1)()"))
+        self.assertFalse(pattern.fullmatch("2 2 + 1"))
+        self.assertFalse(pattern.fullmatch("22 + 1e -1"))
  
 if __name__ == "__main__":
     ut.main()

@@ -8,7 +8,7 @@ def unsigned_float_number_pattern() -> str:
 def float_number_pattern() -> str:
     """Define a pattern for the signed float number"""
     ufn_format: str = unsigned_float_number_pattern()
-    return rf"[+-]?{ufn_format}"
+    return rf"(?:[+-]?{ufn_format})"
 
 def iterable_items_pattern(iterable: Iterable) -> str:
     return rf"(?:{'|'.join([re.escape(str(k)) for k in iterable])})"
@@ -28,7 +28,9 @@ def ltr_expression(number_pattern: str, operation_pattern: str) -> str:
     numbers in a format defined by the `number_pattern` and a set of operations,
     defined by the `operation_pattern`. Expression does not check parentheses pairing.
     """
-    operand: str = rf"(?:\(*{number_pattern}\)*)"
+    openings_and_blanks: str = r"(?:\s*(?:\(\s*)*)"
+    closings_and_blanks: str = r"(?:\s*(?:\)\s*)*)"
+    operand: str = rf"(?:{openings_and_blanks}{number_pattern}{closings_and_blanks}\)*)"
     return rf"(?:{operand}(?:{operation_pattern}{operand})*)"
 
 def inner_expression() -> str:

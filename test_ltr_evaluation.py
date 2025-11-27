@@ -13,6 +13,7 @@ class testLtrEvaluation(ut.TestCase):
         self.assertAlmostEqual(16, eval("3 + (2*10/(40 - 20))+ (3 * 4)"), places=tol)
         self.assertAlmostEqual(14, eval("10.0 + ((10**2)/(20.5 + 4.25 + (25.0/100)))"), places=tol)
         self.assertAlmostEqual(10, eval("4*1e+1/4.0"), places=tol)
+        self.assertAlmostEqual(2.0*(2 - 3), eval("2.0*(2 - 3)"), places=tol)
 
     def test_eval_unpaired_parentheses(self) -> None:
         with self.assertRaises(ValueError):
@@ -43,6 +44,12 @@ class testLtrEvaluation(ut.TestCase):
             eval("(2 + 1)//2")
         with self.assertRaises(ValueError):
             eval("(2 + 1)2")
+    
+    def test_eval_wrong_blank_placing(self) -> None:
+        with self.assertRaises(ValueError):
+            eval("2 2 + 1")
+        with self.assertRaises(ValueError):
+            eval("22 + 1e -1")
     
 if __name__ == "__main__":
     ut.main()

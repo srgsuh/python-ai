@@ -7,6 +7,7 @@ class TestUtils(ut.TestCase):
         self.assertTrue(is_parentheses_pairing("()()((()()(())))"))
         self.assertTrue(is_parentheses_pairing("cos(sin(x))*(x + (2))/((x+y)-tan(x))"))
         self.assertTrue(is_parentheses_pairing("()((x - a)*(x + a))()"))
+        self.assertTrue(is_parentheses_pairing("((((1E+2))))"))
     
     def test_is_parentheses_pairing_false(self) -> None:
         self.assertFalse(is_parentheses_pairing("("))
